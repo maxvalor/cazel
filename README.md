@@ -13,5 +13,13 @@ And then, build it:
     mkdir build && cd build
     cmake .. && make && sudo make install (not finished)
 
+# How To Use
+Build the sample with:
+
+    cd sample/from_mini_ros
+    dr_sync
+    mkdir build && cd build
+    cmake .. && make
+
 # To Do
 Supportting for dowloading zip, tar files from ftp.
