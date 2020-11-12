@@ -73,6 +73,7 @@ function Process()
       cd $DIR_BUILD_DR/$NAME
       if [ "$BRANCH" != "null"  ]; then
         git checkout $BRANCH
+        git pull
       fi
       if [ "$COMMIT" != "null" ]; then
         git checkout $COMMIT
