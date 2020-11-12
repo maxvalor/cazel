@@ -1,0 +1,110 @@
+#!/bin/bash
+
+function Process()
+{
+  declare DIR_PROJECT
+
+  if [ "$1" == "" ]; then
+    DIR_PROJECT=.
+  else
+    DIR_PROJECT=$1
+  fi
+
+  DIR_BUILD=$DIR_PROJECT/build
+  DIR_BUILD_DR=depends
+  FILE_DEPENDS_JSON=depends.json
+
+  cd $DIR_PROJECT
+
+  echo -n "Checing workspace..."
+  # check depends.json
+  if [ ! -f "$FILE_DEPENDS_JSON" ]; then
+    echo "$FILE_DEPENDS_JSON not found."
+    return 1
+  fi
+
+  # check CMakeLists.txt
+  if [ ! -f "CMakeLists.txt" ]; then
+    echo "CMakeLists.txt not found."
+    return 1
+  fi
+
+  echo "Done."
+
+  # analysis depends.json
+  echo "Analysising $FILE_DEPENDS_JSON..."
+
+  function GetValue()
+  {
+    PATTERN=".$1"
+    jq -r $PATTERN $2
+  }
+
+  DPATH=`jq -r ".config.path" $FILE_DEPENDS_JSON`
+  if [ "$DPATH" != "null"  ]; then
+    mkdir -p $DPATH
+    DIR_BUILD_DR=$DPATH
+  fi
+
+  declare INDEX=0
+  declare RLT="1"
+  if [ -f depends.cmake ]; then
+    rm depends.cmake
+  fi
+  touch depends.cmake
+  while [ "$RLT" != "null" ]
+  do
+    PATTERN=".depends[$INDEX]"
+    DEPEND=`jq -r $PATTERN $FILE_DEPENDS_JSON`
+    RLT="$DEPEND"
+    if [ "$RLT" != "null" ];then
+      CACHE_FILE=$DIR_BUILD_DR/$INDEX.json
+      echo $DEPEND > $CACHE_FILE
+      NAME=`GetValue "name" $CACHE_FILE`
+      URL=`GetValue "url" $CACHE_FILE`
+      BRANCH=`GetValue "branch" $CACHE_FILE`
+      COMMIT=`GetValue "commit" $CACHE_FILE`
+      TAG=`GetValue "tag" $CACHE_FILE`
+      if [ ! -d $DIR_BUILD_DR/$NAME ]; then
+        git clone $URL $DIR_BUILD_DR/$NAME
+      fi
+      echo "add_subdirectory($DIR_BUILD_DR/$NAME)" >> depends.cmake
+      CUR=`pwd`
+      cd $DIR_BUILD_DR/$NAME
+      if [ "$BRANCH" != "null"  ]; then
+        git checkout $BRANCH
+      fi
+      if [ "$COMMIT" != "null" ]; then
+        git checkout $COMMIT
+      fi
+      if [ "$TAG" != "null" ]; then
+        git checkout $TAG
+      fi
+      Process
+      cd $CUR
+    fi
+    INDEX=`expr $INDEX + 1`
+  done
+
+  CMAKEFILE=`cat CMakeLists.txt`
+  FOUND=0
+  for txt in $CMAKEFILE
+  do
+    if [ "$txt" == "include(depends.cmake)" ]; then
+      FOUND=1
+    fi
+  done
+
+  if [ $FOUND -eq 0 ];then
+    echo "include(depends.cmake)" >> CMakeLists.txt
+  fi
+}
+
+function main()
+{
+  Process $@
+}
+
+main $@
+
+echo "All done."

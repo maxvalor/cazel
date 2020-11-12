@@ -1,0 +1,23 @@
+#!/bin/bash
+
+declare DIR_PROJECT
+
+if [ "$1" == "" ]; then
+  DIR_PROJECT=.
+else
+  DIR_PROJECT=$1
+fi
+
+DIR_BUILD=$DIR_PROJECT/build
+DIR_BUILD_DR=$DIR_BUILD/dr
+
+DPATH=`jq -r ".config.path" depends.json`
+if [ "$DPATH" != "null"  ]; then
+  mkdir -p $DPATH
+  DIR_BUILD_DR=$DPATH
+fi
+
+rm -rf $DIR_BUILD_DR
+if [ -f depends.cmake ]; then
+  rm depends.cmake
+fi
