@@ -37,18 +37,18 @@ function create_cmake()
 function update_cmakelists()
 {
   local cmake_content=`cat $g_cmakelists`
-  FOUND=0
-  for txt in $CMAKEFILE
+  local found=0
+  for txt in $cmake_content
   do
     if [ "$txt" == "include(depends.cmake)" ]; then
-      FOUND=1
+      found=1
     fi
   done
 
-  if [ $FOUND -eq 0 ];then
-    echo " " >> CMakeLists.txt
-    echo "# added by depends_resolver" >> CMakeLists.txt
-    echo "include(depends.cmake)" >> CMakeLists.txt
+  if [ $found -eq 0 ];then
+    echo " " >> $g_cmakelists
+    echo "# added by depends_resolver" >> $g_cmakelists
+    echo "include(depends.cmake)" >> $g_cmakelists
   fi
 }
 
@@ -144,6 +144,7 @@ function sync_repo()
     fi
   fi
 
+  create_cmake .
   cd $depends_path
 
   local rlt=""
@@ -155,9 +156,9 @@ function sync_repo()
     rlt="$one_depend"
     if [ "$rlt" != "null" ];then
       local cache_file=$index.json
-      echo $one_depend > $cache_file
       local name=`get_depend_value "name" $cache_file`
       echo "Depend [$name] found:"
+      echo "add_subdirectory($depends_path/$name)" >> ../$g_cmake
       local url=`get_depend_value "url" $cache_file`
       if [ "$url" != "null" ] && [ "$url" != "" ];then
         clone_repo $cache_file $url
@@ -182,7 +183,8 @@ function sync_repo()
     index=`expr $index + 1`
   done
 
-  create_cmake .
+  cd ..
+
   update_cmakelists .
 
   cd $workspace
