@@ -11,7 +11,7 @@ The depends resolver can be install with:
 
 And you can uninstall it with:
 
-    sudo ./uinstall.sh -u
+    sudo ./install.sh -u
 
 # How To Use
 Build the sample with:
