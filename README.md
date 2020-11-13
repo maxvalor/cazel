@@ -7,11 +7,11 @@ The depends resolver can be install with:
     sudo apt install jq
     git clone https://github.com/maxvalor/depends_resolver dr
     cd dr
-    ./install.sh
+    sudo ./install.sh
 
 And you can uninstall it with:
 
-    ./uinstall.sh -u
+    sudo ./uinstall.sh -u
 
 # How To Use
 Build the sample with:
