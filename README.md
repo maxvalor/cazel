@@ -21,7 +21,7 @@ Build the sample with:
     mkdir build && cd build
     cmake .. && make
 
-Or you can easily build it with:
+Or you can simply build it with:
 
     dr_make sample/from_mini_ros
 
