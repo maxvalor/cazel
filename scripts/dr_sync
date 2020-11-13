@@ -1,93 +1,42 @@
 #!/bin/bash
 
-function Process()
+declare g_config="depends.json"
+declare g_cmake="depends.cmake"
+declare g_cmakelists="CMakeLists.txt"
+
+function check_dr_project()
 {
-  declare DIR_PROJECT
-
-  if [ "$1" == "" ]; then
-    DIR_PROJECT=.
-  else
-    DIR_PROJECT=$1
-  fi
-
-  DIR_BUILD=$DIR_PROJECT/build
-  DIR_BUILD_DR=depends
-  FILE_DEPENDS_JSON=depends.json
-
-  cd $DIR_PROJECT
-
-  echo -n "Checing workspace..."
-  # check depends.json
-  if [ ! -f "$FILE_DEPENDS_JSON" ]; then
-    echo "$FILE_DEPENDS_JSON not found."
+  local project_path=$1
+  if [ ! -f $project_path/$g_config ]; then
+    echo "Not a dr project."
     return 1
   fi
 
-  # check CMakeLists.txt
-  if [ ! -f "CMakeLists.txt" ]; then
+  return 0
+}
+
+function check_cmakefile()
+{
+  local project_path=$1
+  if [ ! -f "$project_path/CMakeLists.txt" ]; then
     echo "CMakeLists.txt not found."
     return 1
   fi
+  return 0
+}
 
-  echo "Done."
-
-  # analysis depends.json
-  echo "Analysising $FILE_DEPENDS_JSON..."
-
-  function GetValue()
-  {
-    PATTERN=".$1"
-    jq -r $PATTERN $2
-  }
-
-  DPATH=`jq -r ".config.path" $FILE_DEPENDS_JSON`
-  if [ "$DPATH" != "null"  ]; then
-    mkdir -p $DPATH
-    DIR_BUILD_DR=$DPATH
+function create_cmake()
+{
+  local project_path=$1
+  if [ -f $project_path/$g_cmake ]; then
+    rm $project_path/$g_cmake
   fi
+  touch $project_path/$g_cmake
+}
 
-  declare INDEX=0
-  declare RLT="1"
-  if [ -f depends.cmake ]; then
-    rm depends.cmake
-  fi
-  touch depends.cmake
-  while [ "$RLT" != "null" ]
-  do
-    PATTERN=".depends[$INDEX]"
-    DEPEND=`jq -r $PATTERN $FILE_DEPENDS_JSON`
-    RLT="$DEPEND"
-    if [ "$RLT" != "null" ];then
-      CACHE_FILE=$DIR_BUILD_DR/$INDEX.json
-      echo $DEPEND > $CACHE_FILE
-      NAME=`GetValue "name" $CACHE_FILE`
-      URL=`GetValue "url" $CACHE_FILE`
-      BRANCH=`GetValue "branch" $CACHE_FILE`
-      COMMIT=`GetValue "commit" $CACHE_FILE`
-      TAG=`GetValue "tag" $CACHE_FILE`
-      if [ ! -d $DIR_BUILD_DR/$NAME ]; then
-        git clone $URL $DIR_BUILD_DR/$NAME
-      fi
-      echo "add_subdirectory($DIR_BUILD_DR/$NAME)" >> depends.cmake
-      CUR=`pwd`
-      cd $DIR_BUILD_DR/$NAME
-      if [ "$BRANCH" != "null"  ]; then
-        git checkout $BRANCH
-        git pull
-      fi
-      if [ "$COMMIT" != "null" ]; then
-        git checkout $COMMIT
-      fi
-      if [ "$TAG" != "null" ]; then
-        git checkout $TAG
-      fi
-      Process
-      cd $CUR
-    fi
-    INDEX=`expr $INDEX + 1`
-  done
-
-  CMAKEFILE=`cat CMakeLists.txt`
+function update_cmakelists()
+{
+  local cmake_content=`cat $g_cmakelists`
   FOUND=0
   for txt in $CMAKEFILE
   do
@@ -103,11 +52,146 @@ function Process()
   fi
 }
 
+function get_config_value()
+{
+  local pattern=".config.$1"
+  local config_file=$2
+  jq -r $pattern $config_file
+}
+function get_depend_value()
+{
+  local pattern=".$1"
+  local config_file=$2
+  jq -r $pattern $config_file
+}
+
+function clone_repo()
+{
+  local config_file=$1
+  local url=$2
+  local name=`get_depend_value "name" $config_file`
+  if [ -d $name ]; then
+    cd $name
+    git pull
+    cd ..
+  else
+    git clone $url $name
+    local commit=`get_depend_value "commit" $config_file`
+    local tag=`get_depend_value "tag" $config_file`
+
+    if [ "$branch" != "null" ] && [ "$branch" != ""  ];then
+      cd $name
+      git checkout $branch
+      cd ..
+    fi
+    if [ "$tag" != "null" ] && [ "$tag" != ""  ];then
+      cd $name
+      git checkout $tag
+      cd ..
+    fi
+    if [ "$commit" != "null" ] && [ "$commit" != ""  ];then
+      cd $name
+      git checkout $commit
+      cd ..
+    fi
+  fi
+  return 0
+}
+
+function copy_local()
+{
+  cp -r $2 ./
+}
+
+function download_from_ftp()
+{
+  echo "download_from_ftp"
+}
+
+function sync_repo()
+{
+  local workspace=`pwd`
+  local project=$1
+  local project_name
+  local depends_path
+
+  echo -n "Checing workspace..."
+
+  if [ "$project" == "" ]; then
+    project="."
+  fi
+
+  if [ ! -d $project ]; then
+    echo "Project $project not found."
+    return 1
+  fi
+
+  check_dr_project $project
+  if [ $? -eq 1 ]; then
+    return 1
+  fi
+
+  echo "done."
+
+  echo "Analysising $g_config..."
+  cd $project
+  project_name=`get_config_value "name" $g_config`
+  depends_path=`get_config_value "path" $g_config`
+
+  if [ "$depends_path" != "null"  ]; then
+    if [ ! -d $depends_path ]; then
+      mkdir -p $depends_path
+    fi
+  fi
+
+  cd $depends_path
+
+  local rlt=""
+  local index=0
+  while [ "$rlt" != "null" ]
+  do
+    local pattern=".depends[$index]"
+    local one_depend=`jq -r $pattern ../$g_config`
+    rlt="$one_depend"
+    if [ "$rlt" != "null" ];then
+      local cache_file=$index.json
+      echo $one_depend > $cache_file
+      local name=`get_depend_value "name" $cache_file`
+      echo "Depend [$name] found:"
+      local url=`get_depend_value "url" $cache_file`
+      if [ "$url" != "null" ] && [ "$url" != "" ];then
+        clone_repo $cache_file $url
+        index=`expr $index + 1`
+        continue
+      fi
+
+      local local=`get_depend_value "local" $cache_file`
+      if [ "$local" != "null" ] && [ "$local" != ""  ];then
+        copy_local $cache_file $local
+        index=`expr $index + 1`
+        continue
+      fi
+
+      local ftp=`get_depend_value "ftp" $cache_file`
+      if [ "$ftp" != "null" ] && [ "$ftp" != ""  ];then
+        download_from_ftp $cache_file $ftp
+        index=`expr $index + 1`
+        continue
+      fi
+    fi
+    index=`expr $index + 1`
+  done
+
+  create_cmake .
+  update_cmakelists .
+
+  cd $workspace
+  echo "Finished to sync project $project_name."
+}
+
 function main()
 {
-  Process $@
+  sync_repo $@
 }
 
 main $@
-
-echo "All done."
