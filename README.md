@@ -24,6 +24,10 @@ Build the sample with:
 Or you can easily build it with:
 
     dr_make from_mini_ros
+    
+Clean the depends with:
+
+    dr_clean
 
 # To Do
 Supportting for dowloading zip, tar files from ftp.
