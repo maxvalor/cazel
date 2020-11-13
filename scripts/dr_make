@@ -29,11 +29,21 @@ function make_with_config()
   return $?
 }
 
+function check_dr_project()
+{
+  local project_path=$1
+  if [ -f $project_path/$g_config ]; then
+    return 0
+  fi
+
+  return 1
+}
+
 function get_project_name()
 {
   local config_file=$1
-  local cmake_config=`jq -r ".config.name" $config_file`
-  echo $cmake_config
+  local project_name=`jq -r ".config.name" $config_file`
+  echo $project_name
 }
 
 function main()
@@ -41,16 +51,20 @@ function main()
   local workspace=`pwd`
   local project=$1
   local project_name
+
   if [ "$project" == "" ]; then
     project="."
   fi
-
+  check_dr_project $project
+  if [ $? -eq 1 ]; then
+    echo "Not a dr project"
+    return 1
+  fi
   if [ ! -d $project ]; then
     echo "Project $project not found."
     return 1
   fi
 
-  dr_sync $project
   cd $project/
   project_name=`get_project_name $g_config`
   create_build .
@@ -58,7 +72,7 @@ function main()
   cmake_with_config ../$g_config
   if [ $? -ne 0 ]; then
     cd $workspace
-    echo "Cmake failed."
+    echo "CMake failed."
     return 1
   fi
   make_with_config ../$g_config
@@ -69,8 +83,8 @@ function main()
   fi
 
   cd $workspace
+  echo "dr_make: Built project $project_name."
 
-  echo "[100%] Built project $project_name."
   return 0
 }
 

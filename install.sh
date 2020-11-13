@@ -40,7 +40,9 @@ function install()
 {
   echo -n "Installing..."
   traversal copy_scripts
-  echo "done."
+  if [ $? -eq 0 ]; then
+    echo "done."
+  fi
   return $?
 }
 
@@ -48,7 +50,9 @@ function uninstall()
 {
   echo -n "Uninstalling..."
   traversal remove_scripts
-  echo "done."
+  if [ $? -eq 0 ]; then
+    echo "done."
+  fi
   return $?
 }
 

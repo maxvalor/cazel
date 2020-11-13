@@ -97,6 +97,8 @@ function Process()
   done
 
   if [ $FOUND -eq 0 ];then
+    echo " " >> CMakeLists.txt
+    echo "# added by depends_resolver" >> CMakeLists.txt
     echo "include(depends.cmake)" >> CMakeLists.txt
   fi
 }

@@ -23,6 +23,7 @@ Build the sample with:
 
 Or you can simply build it with:
 
+    dr_sync sample/from_mini_ros
     dr_make sample/from_mini_ros
 
 Clean the depends with:
