@@ -24,7 +24,7 @@ function cmake_with_config()
 function make_with_config()
 {
   local config_file=$1
-  local cmake_config=`jq -r ".config.make" $config_file`
+  local make_config=`jq -r ".config.make" $config_file`
   make $make_config
   return $?
 }
