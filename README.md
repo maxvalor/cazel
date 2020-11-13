@@ -26,9 +26,13 @@ Or you can simply build it with:
     dr_sync sample/from_mini_ros
     dr_make sample/from_mini_ros
 
-Clean the depends with:
+Clean the build files with:
 
-    dr_clean
+    dr_clean sample/from_mini_ros
+    
+Remove the depends with:
+
+    dr_remove sample/from_mini_ros
 
 # To Do
 Supportting for dowloading zip, tar files from ftp.
