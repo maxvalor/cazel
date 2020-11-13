@@ -8,7 +8,6 @@ function check_dr_project()
 {
   local project_path=$1
   if [ ! -f $project_path/$g_config ]; then
-    echo "Not a dr project."
     return 1
   fi
 
@@ -128,6 +127,7 @@ function sync_repo()
 
   check_dr_project $project
   if [ $? -eq 1 ]; then
+    echo "Not a dr project."
     return 1
   fi
 
@@ -156,12 +156,17 @@ function sync_repo()
     rlt="$one_depend"
     if [ "$rlt" != "null" ];then
       local cache_file=$index.json
+      echo $one_depend > $cache_file
       local name=`get_depend_value "name" $cache_file`
       echo "Depend [$name] found:"
       echo "add_subdirectory($depends_path/$name)" >> ../$g_cmake
       local url=`get_depend_value "url" $cache_file`
       if [ "$url" != "null" ] && [ "$url" != "" ];then
         clone_repo $cache_file $url
+        check_dr_project $name
+        if [ $? -eq 0 ]; then
+          sync_repo $name
+        fi
         index=`expr $index + 1`
         continue
       fi
@@ -169,6 +174,10 @@ function sync_repo()
       local local=`get_depend_value "local" $cache_file`
       if [ "$local" != "null" ] && [ "$local" != ""  ];then
         copy_local $cache_file $local
+        check_dr_project $name
+        if [ $? -eq 0 ]; then
+          sync_repo $name
+        fi
         index=`expr $index + 1`
         continue
       fi
@@ -176,6 +185,10 @@ function sync_repo()
       local ftp=`get_depend_value "ftp" $cache_file`
       if [ "$ftp" != "null" ] && [ "$ftp" != ""  ];then
         download_from_ftp $cache_file $ftp
+        check_dr_project $name
+        if [ $? -eq 0 ]; then
+          sync_repo $name
+        fi
         index=`expr $index + 1`
         continue
       fi
