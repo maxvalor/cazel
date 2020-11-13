@@ -23,7 +23,8 @@ Build the sample with:
 
 Or you can easily build it with:
 
-    dr_make from_mini_ros
+    cd sample/from_mini_ros
+    dr_make 
     
 Clean the depends with:
 
