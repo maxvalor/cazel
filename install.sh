@@ -1,6 +1,7 @@
 #!/bin/bash
 
 declare g_system_bin="/usr/bin"
+declare g_src="./scripts"
 
 function copy_scripts()
 {
@@ -19,11 +20,15 @@ function traversal
 {
   local process=$1
   local files
-  if [ ! -d scripts ]; then
+  if [ ! -d $g_src ]; then
     echo "scripts directory not found."
     return 1
   fi
-  files=`ls scripts`
+  if [ ! -d $g_system_bin ]; then
+    echo "systen bin directory not found."
+    return 1
+  fi
+  files=`ls $g_src`
   for file in $files
   do
     ${process} $file

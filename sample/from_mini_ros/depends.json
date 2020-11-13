@@ -1,6 +1,9 @@
 {
   "config":{
-    "path": "depends"
+    "name": "mini_ros_sample",
+    "path": "depends",
+    "cmake": "",
+    "make": "-j8"
   },
   "depends": [
     {
