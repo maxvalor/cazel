@@ -1,0 +1,18 @@
+#!/bin/bash
+
+DPATH="."
+if [ "$1" != "" ]; then
+  DPATH=$1
+fi
+
+CUR=`pwd`
+cd $DPATH
+dr_sync
+
+if [ ! -d $DPATH/build ]; then
+  mkdir $DPATH/build
+fi
+
+cd $DPATH/build
+cmake .. && make
+cd $CUR
