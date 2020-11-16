@@ -83,7 +83,7 @@ function main()
   fi
 
   cd $workspace
-  echo "dr_make: Built project $project_name."
+  echo "cazel: Built project $project_name."
 
   return 0
 }

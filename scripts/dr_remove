@@ -53,6 +53,7 @@ function main()
   depends_path=`get_depends_path $g_config`
   if [ -d $depends_path ]; then
     rm -rf $depends_path
+    rm -rf build
   fi
   cd $workspace
 

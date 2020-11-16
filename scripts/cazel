@@ -1,0 +1,34 @@
+#!/bin/bash
+
+function main()
+{
+  local command=$1
+  shift
+  case $command in
+    "sync"):
+    dr_sync $@
+    ;;
+    "build"):
+    dr_make $@
+    ;;
+    "auto"):
+    dr_sync $@
+    dr_make $@
+    ;;
+    "clean"):
+    dr_clean $@
+    ;;
+    "remove"):
+    dr_remove $@
+    ;;
+    "info"):
+    dr_info $@
+    ;;
+    *):
+    echo "unkown command."
+    ;;
+  esac
+}
+
+
+main $@
