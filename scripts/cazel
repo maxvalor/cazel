@@ -1,5 +1,22 @@
 #!/bin/bash
 
+function showCommands()
+{
+  echo "Usage: cazel <command> <target>"
+  echo ""
+  echo "Available commands:"
+  echo "  sync   - Synchronize depends from server."
+  echo "  build  - Build target project by cmake."
+  echo "  auto   - execute sync and build command."
+  echo "  clean  - Clean obj files."
+  echo "  remove - Remove all build and depends directories."
+}
+
+function commandComplete()
+{
+  # to be implemented
+}
+
 function main()
 {
   local command=$1
@@ -24,8 +41,11 @@ function main()
     "info"):
     dr_info $@
     ;;
+    "help"):
+    showCommands
+    ;;
     *):
-    echo "unkown command."
+    echo "unkown command, use \"cazel help\" to get help."
     ;;
   esac
 }
