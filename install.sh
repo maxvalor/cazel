@@ -66,16 +66,10 @@ function main()
   fi
 
   case "$option" in
-    "-i")
+    "--install" | "-i")
       install
       ;;
-    "--install")
-      install
-      ;;
-    "-u")
-      uninstall
-      ;;
-    "--uninstall")
+    "--uninstall" | "-u")
       uninstall
       ;;
     *)
