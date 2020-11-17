@@ -15,6 +15,7 @@ function showCommands()
 function commandComplete()
 {
   # to be implemented
+  return 0
 }
 
 function main()
@@ -29,6 +30,11 @@ function main()
     dr_make $@
     ;;
     "auto"):
+    dr_sync $@
+    dr_make $@
+    ;;
+    "re-auto"):
+    dr_remove $@
     dr_sync $@
     dr_make $@
     ;;

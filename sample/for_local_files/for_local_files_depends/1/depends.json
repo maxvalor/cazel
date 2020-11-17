@@ -1,0 +1,14 @@
+{
+  "config":{
+    "name": "1",
+    "path": "depends",
+    "cmake": "",
+    "make": "-j8"
+  },
+  "depends": [
+    {
+      "name": "3",
+      "local": "/home/ubuntu/workspace/cazel/sample/for_local_files/for_local_files_depends/3"
+    }
+  ]
+}
