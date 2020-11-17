@@ -128,8 +128,6 @@ function sync_sub_repo()
   local root_depends_name=$3
   local depends_path
 
-  echo root_depends_path:$root_depends_path
-
   echo -n "Checing workspace..."
 
   if [ "$project" == "" ]; then

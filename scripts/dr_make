@@ -8,7 +8,7 @@ function create_build()
   local project=$1
   if [ ! -d $g_build ]; then
     mkdir -p $project/$g_build
-    return @?
+    return $?
   fi
   return 0
 }
