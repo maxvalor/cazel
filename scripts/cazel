@@ -38,6 +38,9 @@ function main()
     dr_sync $@
     dr_make $@
     ;;
+    "exec"):
+    dr_exec $@
+    ;;
     "clean"):
     dr_clean $@
     ;;
