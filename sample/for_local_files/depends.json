@@ -2,7 +2,7 @@
   "config":{
     "name": "for_local_files",
     "path": "depends",
-    "cmake": "",
+    "cmake": "-DTEST_CMAKE_OPTION=OFF",
     "make": "-j8"
   },
   "depends": [
