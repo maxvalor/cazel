@@ -7,9 +7,18 @@
   },
   "depends": [
     {
-      "name": "mini_ros",
-      "url": "https://github.com/maxvalor/mini_ros",
-      "branch": "master"
+      "local":[
+      ],
+      "git":[
+        {
+          "name": "mini_ros",
+          "url": "https://github.com/maxvalor/mini_ros",
+          "branch": "master"
+        }
+      ],
+      "ftp":[
+
+      ]
     }
   ]
 }

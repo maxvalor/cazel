@@ -1,5 +1,13 @@
 #!/bin/bash
 
+export CAZEL_LIBS_PATH="/usr/lib/cazel/"
+
+source $CAZEL_LIBS_PATH/commands/sync.sh
+source $CAZEL_LIBS_PATH/commands/remove.sh
+source $CAZEL_LIBS_PATH/commands/build.sh
+source $CAZEL_LIBS_PATH/commands/clean.sh
+source $CAZEL_LIBS_PATH/commands/exec.sh
+
 function showCommands()
 {
   echo "Usage: cazel <command> <target>"
@@ -8,6 +16,7 @@ function showCommands()
   echo "  sync   - Synchronize depends from server."
   echo "  build  - Build target project by cmake."
   echo "  auto   - execute sync and build command."
+  echo "  exec   - execute a binary file."
   echo "  clean  - Clean obj files."
   echo "  remove - Remove all build and depends directories."
 }
@@ -20,35 +29,36 @@ function commandComplete()
 
 function main()
 {
+  logInit
+
   local command=$1
   shift
   case $command in
     "sync"):
-    dr_sync $@
+    commandCazelSync $@
     ;;
     "build"):
-    dr_make $@
+    commandCazelBuild $@
     ;;
     "auto"):
-    dr_sync $@
-    dr_make $@
+    commandCazelSync $@
+    commandCazelBuild $@
     ;;
     "re-auto"):
-    dr_remove $@
-    dr_sync $@
-    dr_make $@
+    commandCazelRemove $@
+    commandCazelSync $@
+    commandCazelBuild $@
     ;;
     "exec"):
-    dr_exec $@
+    commandCazelExec $@
     ;;
     "clean"):
-    dr_clean $@
+    commandCazelClean $@
     ;;
-    "remove"):
-    dr_remove $@
+    "remove" | "rm"):
+    commandCazelRemove $@
     ;;
     "info"):
-    dr_info $@
     ;;
     "help"):
     showCommands

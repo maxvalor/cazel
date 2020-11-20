@@ -7,8 +7,18 @@
   },
   "depends": [
     {
-      "name": "3",
-      "local": "/home/ubuntu/workspace/cazel/sample/for_local_files/for_local_files_depends/3"
+      "local":[
+        {
+          "name": "3",
+          "src": "/home/ubuntu/workspace/cazel/sample/for_local_files/for_local_files_depends/3"
+        }
+      ],
+      "git":[
+
+      ],
+      "ftp":[
+
+      ]
     }
   ]
 }
