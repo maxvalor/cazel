@@ -16,20 +16,24 @@ And you can uninstall it with:
 # How To Use
 Build the sample with:
 
-    cazel sync sample/from_mini_ros
-    cazel build sample/from_mini_ros
+    cazel sync from_mini_ros
+    cazel build from_mini_ros
 
 Or you can simply build it with:
 
-    cazel auto sample/from_mini_ros
+    cazel auto from_mini_ros
 
 Clean the build files with:
 
-    cazel clean sample/from_mini_ros
+    cazel clean from_mini_ros
 
 Remove the depends and build files with:
 
-    cazel remove sample/from_mini_ros
+    cazel remove from_mini_ros
+
+Execute the binary file with:
+
+    cazel exec from_mini_ros sample
 
 # To Do
 Supportting for dowloading zip, tar files from ftp.
