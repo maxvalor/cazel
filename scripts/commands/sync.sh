@@ -129,6 +129,30 @@ function syncGitRepo()
       git clone $url $__sync__root_depends_path/$name
     fi
 
+    local branch
+    branch=`getJsonValue "$json_git" "branch"`
+    if [ $? -eq 0 ]; then
+      cd $name
+      git checkout $branch
+      cd -
+    fi
+
+    local tag
+    tag=`getJsonValue "$json_git" "tag"`
+    if [ $? -eq 0 ]; then
+      cd $name
+      git checkout $tag
+      cd -
+    fi
+
+    local commit
+    commit=`getJsonValue "$json_git" "commit"`
+    if [ $? -eq 0 ]; then
+      cd $name
+      git checkout $commit
+      cd -
+    fi
+
     if [ ! -L $name ] && [ ! -d $name ]; then
       ln -s $__sync__root_depends_path/$name `pwd`/$name
     fi
