@@ -16,12 +16,13 @@ source ${CAZEL_LIBS_PATH}/common/logger.sh
 
 function buildTarget()
 {
-  if [ $# != 1 ]; then
+  if [ $# -gt 2 ]; then
     return 9
   fi
 
   local target_path=$1
   local workspace=`pwd`
+  local target=$2
   local json_all
   json_all=`loadDependsFile $target_path/$const_config_filename`
   if [ $? -ne 0 ]; then
@@ -44,7 +45,7 @@ function buildTarget()
   if [ $? -ne 0 ]; then
     make_config=""
   fi
-  make $make_config
+  make $make_config $target
   cd $workspace
 
   return 0
@@ -62,20 +63,21 @@ function buildTarget()
 #   9 - too many parameters
 function commandCazelBuild()
 {
-  if [ $# != 1 ]; then
+  if [ $# -gt 2 ]; then
     return 9
   fi
 
   logInfoMsg "command: cazel build."
 
   local target=$1
+  shift
   local ws=`pwd`
   local target_path
   target_path=`searchForProject $ws $target`
 
   case $? in
     0)
-      buildTarget $target_path
+      buildTarget $target_path $@
       ;;
     1)
       echo "Target:"$1" not found. Please check your projects again."
