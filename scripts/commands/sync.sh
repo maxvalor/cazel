@@ -330,7 +330,7 @@ function commandCazelSync()
       syncRootRepo $target_path
       ;;
     1)
-      echo "Target:"$1" not found. Please check your projects again."
+      echo "Target:"$target" not found. Please check your projects again."
       ;;
     2)
       echo "More than one target path is found:"

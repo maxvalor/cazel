@@ -58,30 +58,23 @@ function buildTarget()
   echo "# added by depends_resolver" >> $target_path/$const_cmakelists_filename
   echo $include_cmake_str >> $target_path/$const_cmakelists_filename
 
-  local target_name
-  target_name=`getFilename $target_path`
-  if [ $? -eq 0 ]; then
-
-    if [ ! -d $workspace/$const_build_pathname/$target_name ]; then
-      mkdir -p $workspace/$const_build_pathname/$target_name
-    fi
-    cd $workspace/$const_build_pathname/$target_name
-    local cmake_config
-    cmake_config=`getJsonConfigValue "$json_all" "cmake"`
-    if [ $? -ne 0 ]; then
-      cmake_config=""
-    fi
-    cmake $cmake_config $target_path
-
-    local make_config
-    make_config=`getJsonConfigValue "$json_all" "make"`
-    if [ $? -ne 0 ]; then
-      make_config=""
-    fi
-    make $make_config $target
-  else
-    logDebugMsg "failed to get filename, target_path:"$target_path
+  if [ ! -d $workspace/$const_build_pathname/$target_name ]; then
+    mkdir -p $workspace/$const_build_pathname/$target_name
   fi
+  cd $workspace/$const_build_pathname/$target_name
+  local cmake_config
+  cmake_config=`getJsonConfigValue "$json_all" "cmake"`
+  if [ $? -ne 0 ]; then
+    cmake_config=""
+  fi
+  cmake $cmake_config $target_path
+
+  local make_config
+  make_config=`getJsonConfigValue "$json_all" "make"`
+  if [ $? -ne 0 ]; then
+    make_config=""
+  fi
+  make $make_config $target
 
   cd $workspace
 
@@ -122,7 +115,7 @@ function commandCazelBuild()
       buildTarget $target_path $@
       ;;
     1)
-      echo "Target:"$1" not found. Please check your projects again."
+      echo "Target:"$target" not found. Please check your projects again."
       ;;
     2)
       echo "More than one target path is found:"
