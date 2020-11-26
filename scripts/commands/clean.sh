@@ -22,16 +22,7 @@ function cleanTarget()
 
   local target_path=$1
   local workspace=`pwd`
-  local json_all
-  json_all=`loadDependsFile $target_path/$const_config_filename`
-  if [ $? -ne 0 ]; then
-    return 1
-  fi
-
-  if [ ! -d $target_path/$const_build_pathname ]; then
-    mkdir -p $target_path/$const_build_pathname
-  fi
-  cd $target_path/$const_build_pathname
+  cd $target_path
   make clean
   cd $workspace
 
@@ -57,13 +48,13 @@ function commandCazelClean()
   logInfoMsg "command: cazel clean."
 
   local target=$1
-  local ws=`pwd`
+  shift
   local target_path
-  target_path=`searchForProject $ws $target`
+  target_path=`searchInBuild $target`
 
   case $? in
     0)
-      cleanTarget $target_path
+      cleanTarget $target_path $@
       ;;
     1)
       echo "Target:"$1" not found. Please check your projects again."

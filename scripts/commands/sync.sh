@@ -200,8 +200,9 @@ function syncRepo()
   if [ $? -ne 0 ]; then
     return 1
   fi
-  if [ ! -d $depends_path ]; then
-    mkdir -p $depends_path
+  if [ ! -L $depends_path ]; then
+    #mkdir -p $depends_path
+    ln -s $__sync__root_depends_path $depends_path
   fi
 
   cd $depends_path
@@ -264,21 +265,34 @@ function syncRootRepo()
     return 1
   fi
 
+  local workspace=`pwd`
   local depends_path
   depends_path=`getJsonConfigValue "$json_all" "path"`
   if [ $? -ne 0 ]; then
     return 1
   fi
-  if [ ! -d $target_path/$depends_path ]; then
-    mkdir -p $target_path/$depends_path
+  local target_name
+  target_name=`getJsonConfigValue "$json_all" "name"`
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+  # make the path of cazel-depends
+  if [ ! -d $workspace/$const_depends_pathname/$target_name ]; then
+    mkdir -p $workspace/$const_depends_pathname/$target_name
+  fi
+  # re-link depends
+  if [ -L $target_path/$depends_path ]; then
+    rm -f $target_path/$depends_path
+    ln -s $workspace/$const_depends_pathname/$target_name $target_path/$depends_path
   fi
 
-  if [ -f $target_path/$depends_path/$const_generated_cmake ]; then
-    rm -f $target_path/$depends_path/$const_generated_cmake
+  # re-touch depends.cmake
+  if [ -f $workspace/$const_depends_pathname/$target_name/$const_generated_cmake ]; then
+    rm -f $workspace/$const_depends_pathname/$target_name/$const_generated_cmake
   fi
-  touch $target_path/$depends_path/$const_generated_cmake
+  touch $workspace/$const_depends_pathname/$target_name/$const_generated_cmake
 
-  __sync__root_depends_path=$1/$depends_path
+  __sync__root_depends_path=$target_path/$depends_path
 
   syncRepo "$target_path" "$json_all"
 

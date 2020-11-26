@@ -39,3 +39,12 @@ function logInfoMsg()
   echo "[info] $*" >> ${CAZEL_LOG_PATH}/cazel.log
   return $rlt
 }
+
+# params:
+#   $* - message
+function logDebugMsg()
+{
+  local rlt=$?
+  echo "[debug] $*" >> ${CAZEL_LOG_PATH}/cazel.log
+  return $rlt
+}

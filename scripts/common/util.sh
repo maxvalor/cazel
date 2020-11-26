@@ -57,15 +57,13 @@ function getFilePath()
   fi
 
   local target_file=$1
-  if [[ ! -f $target_file ]]; then
-    return 1
-  fi
-
-  local target_path
-  target_path=`_strLeftBySlash $target_file`
-  if [[ $? -eq 0 ]]; then
-    echo $target_path
-    return 0
+  if [ -d $target_file ] || [ -f $target_file ]; then
+    local target_path
+    target_path=`_strLeftBySlash $target_file`
+    if [[ $? -eq 0 ]]; then
+      echo $target_path
+      return 0
+    fi
   fi
 
   return 1
@@ -85,17 +83,14 @@ function getFilename()
   fi
 
   local target_file=$1
-  if [[ ! -f $target_file ]]; then
-    return 1
+  if [ -d $target_file ] || [ -f $target_file ]; then
+    local target_path
+    target_path=`_strRightBySlash $target_file`
+    if [[ $? -eq 0 ]]; then
+      echo $target_path
+      return 0
+    fi
   fi
-
-  local target_path
-  target_path=`_strRightBySlash $target_file`
-  if [[ $? -eq 0 ]]; then
-    echo $target_path
-    return 0
-  fi
-
   return 1
 }
 

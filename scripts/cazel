@@ -3,7 +3,6 @@
 export CAZEL_LIBS_PATH="/usr/lib/cazel/"
 
 source $CAZEL_LIBS_PATH/commands/sync.sh
-source $CAZEL_LIBS_PATH/commands/remove.sh
 source $CAZEL_LIBS_PATH/commands/build.sh
 source $CAZEL_LIBS_PATH/commands/clean.sh
 source $CAZEL_LIBS_PATH/commands/exec.sh
@@ -18,7 +17,6 @@ function showCommands()
   echo "  auto   - execute sync and build command."
   echo "  exec   - execute a binary file."
   echo "  clean  - Clean obj files."
-  echo "  remove - Remove all build and depends directories."
 }
 
 function commandComplete()

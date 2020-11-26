@@ -20,11 +20,12 @@ function execTarget()
   local binfile=$2
   shift 2
 
-  if [ -f $target_path/$const_build_pathname/$binfile ]; then
-    $target_path/$const_build_pathname/$binfile $@
+  if [ -f $target_path/$binfile ]; then
+    $target_path/$binfile $@
+    return 0
   fi
 
-  return 0
+  return 1
 }
 
 #-----------------------------------------------------------------------------#
@@ -48,9 +49,8 @@ function commandCazelExec()
 
   local target=$1
   shift
-  local ws=`pwd`
   local target_path
-  target_path=`searchForProject $ws $target`
+  target_path=`searchInBuild $target`
 
   case $? in
     0)

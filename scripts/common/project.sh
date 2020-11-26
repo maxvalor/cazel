@@ -79,6 +79,7 @@ function searchForProject()
 
   local count=0
   local rlt=1
+
   for config_file in $config_files
   do
     local json_contents
@@ -103,7 +104,33 @@ function searchForProject()
   done
 
   echo $found_path
-  logInfoMsg "found_path:$found_path"$name
+  logInfoMsg "found_path:$found_path:"$name
 
   return $rlt
+}
+
+# params:
+#   $1 - target
+# echos:
+#   string: path for target (first found)
+# returns:
+#   0 - target found
+#   1 - target not found
+#   2 - more that one target is found
+#   9 - too many parameters
+function searchInBuild()
+{
+  if [ $# != 1 ]; then
+    return 9
+  fi
+  local target=$1
+  local workspace=`pwd`
+  for dir in `ls $workspace/$const_build_pathname`
+  do
+    if [ "$dir" == "$target" ]; then
+      echo $workspace/$const_build_pathname/$dir
+      return 0
+    fi
+  done
+  return 1
 }
