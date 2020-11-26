@@ -278,14 +278,6 @@ function syncRootRepo()
   fi
   touch $target_path/$depends_path/$const_generated_cmake
 
-  local include_cmake_str="include($target_path/$depends_path/$const_generated_cmake)"
-  findStringInFile "$include_cmake_str" "$target_path/$const_cmakelists_filename"
-  if [[ $? -eq 1 ]]; then
-    echo " " >> $target_path/$const_cmakelists_filename
-    echo "# added by depends_resolver" >> $target_path/$const_cmakelists_filename
-    echo $include_cmake_str >> $target_path/$const_cmakelists_filename
-  fi
-
   __sync__root_depends_path=$1/$depends_path
 
   syncRepo "$target_path" "$json_all"

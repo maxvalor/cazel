@@ -29,6 +29,22 @@ function buildTarget()
     return 1
   fi
 
+  local depends_path
+  depends_path=`getJsonConfigValue "$json_all" "path"`
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+  if [ ! -d $target_path/$depends_path ]; then
+    return 1
+  fi
+
+  local include_cmake_str="include($target_path/$depends_path/$const_generated_cmake)"
+
+  cp $target_path/$const_cmakelists_filename $target_path/.$const_cmakelists_filename.cache
+  echo " " >> $target_path/$const_cmakelists_filename
+  echo "# added by depends_resolver" >> $target_path/$const_cmakelists_filename
+  echo $include_cmake_str >> $target_path/$const_cmakelists_filename
+
   if [ ! -d $target_path/$const_build_pathname ]; then
     mkdir -p $target_path/$const_build_pathname
   fi
@@ -47,6 +63,8 @@ function buildTarget()
   fi
   make $make_config $target
   cd $workspace
+
+  mv $target_path/.$const_cmakelists_filename.cache $target_path/$const_cmakelists_filename
 
   return 0
 }
