@@ -1,7 +1,7 @@
 {
   "config":{
-    "name": "1",
-    "path": "depends",
+    "name": "2",
+    "path": "depends_not_same",
     "cmake": "",
     "make": "-j8"
   },
@@ -10,7 +10,7 @@
       "local":[
         {
           "name": "3",
-          "src": "/home/ubuntu/workspace/cazel/sample/for_local_files/for_local_files_depends/3"
+          "src": "/home/ubuntu/workspace/cazel/sample/local_depends/for_local_files_depends/3"
         }
       ],
       "git":[

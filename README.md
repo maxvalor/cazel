@@ -31,9 +31,6 @@ Execute the binary file with:
 
     cazel exec from_mini_ros sample
 
-Another sample is as the same:
-
-    cazel re-auto for_local_files
 
 
 # To Do

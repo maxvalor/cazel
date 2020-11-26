@@ -3,6 +3,7 @@
 export CAZEL_LIBS_PATH="/usr/lib/cazel/"
 
 source $CAZEL_LIBS_PATH/commands/sync.sh
+source $CAZEL_LIBS_PATH/commands/remove.sh
 source $CAZEL_LIBS_PATH/commands/build.sh
 source $CAZEL_LIBS_PATH/commands/clean.sh
 source $CAZEL_LIBS_PATH/commands/exec.sh
@@ -42,19 +43,11 @@ function main()
     commandCazelSync $@
     commandCazelBuild $@
     ;;
-    "re-auto"):
-    commandCazelRemove $@
-    commandCazelSync $@
-    commandCazelBuild $@
-    ;;
     "exec"):
     commandCazelExec $@
     ;;
     "clean"):
     commandCazelClean $@
-    ;;
-    "remove" | "rm"):
-    commandCazelRemove $@
     ;;
     "info"):
     ;;

@@ -8,6 +8,3 @@ add_executable(sample main.cpp)
 
 set(SAMPLE_DEPENDS lib1 lib2)
 target_link_libraries(sample ${SAMPLE_DEPENDS})
- 
-# added by depends_resolver
-include(depends.cmake)

@@ -7,17 +7,12 @@
   },
   "depends": [
     {
-      "local":[
-      ],
       "git":[
         {
           "name": "mini_ros",
           "url": "https://github.com/maxvalor/mini_ros",
           "branch": "master"
         }
-      ],
-      "ftp":[
-
       ]
     }
   ]

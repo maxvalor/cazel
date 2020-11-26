@@ -13,6 +13,3 @@ add_executable(sample ./main.cpp)
 
 set(SAMPLE_DEPENDS miniros)
 target_link_libraries(sample ${SAMPLE_DEPENDS})
-
-# added by depends_resolver
-include(/home/ubuntu/workspace/cazel/test/from_mini_ros/depends/depends.cmake)
