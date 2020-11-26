@@ -16,20 +16,20 @@ And you can uninstall it with:
 # How To Use
 Build the sample with:
 
-    cazel sync from_mini_ros
-    cazel build from_mini_ros sample
+    cazel sync mini_ros_sample
+    cazel build mini_ros_sample sample
 
 Or you can simply build it with:
 
-    cazel auto from_mini_ros
+    cazel auto mini_ros_sample
 
 Clean the build files with:
 
-    cazel clean from_mini_ros
+    cazel clean mini_ros_sample
 
 Execute the binary file with:
 
-    cazel exec from_mini_ros sample
+    cazel exec mini_ros_sample sample
 
 
 
