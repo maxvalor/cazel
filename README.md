@@ -17,7 +17,7 @@ And you can uninstall it with:
 Build the sample with:
 
     cazel sync from_mini_ros
-    cazel build from_mini_ros
+    cazel build from_mini_ros sample
 
 Or you can simply build it with:
 
