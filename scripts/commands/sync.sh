@@ -60,9 +60,9 @@ function syncLocalRepo()
     logInfoMsg "copy src:$src to $__sync__root_depends_path"
     cp -r $src $__sync__root_depends_path
 
-    if [ ! -L $name ] && [ ! -d $name ]; then
-      ln -s $__sync__root_depends_path/$name `pwd`/$name
-    fi
+    #if [ ! -L $name ] && [ ! -d $name ]; then
+    #  ln -s $__sync__root_depends_path/$name `pwd`/$name
+    #fi
 
     isCMakeProject $name
     logInfoMsg "depend $name is cmake project? => $?"
@@ -153,9 +153,9 @@ function syncGitRepo()
       cd -
     fi
 
-    if [ ! -L $name ] && [ ! -d $name ]; then
-      ln -s $__sync__root_depends_path/$name `pwd`/$name
-    fi
+    #if [ ! -L $name ] && [ ! -d $name ]; then
+    #  ln -s $__sync__root_depends_path/$name `pwd`/$name
+    #fi
 
     isCMakeProject $name
     logInfoMsg "depend $name is cmake project? => $?"
@@ -202,10 +202,10 @@ function syncRepo()
   fi
   if [ ! -L $depends_path ]; then
     #mkdir -p $depends_path
-    ln -s $__sync__root_depends_path $depends_path
+    ln -s $__sync__root_depends_path $project_path/$depends_path
   fi
 
-  cd $depends_path
+  cd $project_path/$depends_path
 
   # get all depends
   local index=0
@@ -283,8 +283,9 @@ function syncRootRepo()
   # re-link depends
   if [ -L $target_path/$depends_path ]; then
     rm -f $target_path/$depends_path
-    ln -s $workspace/$const_depends_pathname/$target_name $target_path/$depends_path
   fi
+
+  ln -s $workspace/$const_depends_pathname/$target_name $target_path/$depends_path
 
   # re-touch depends.cmake
   if [ -f $workspace/$const_depends_pathname/$target_name/$const_generated_cmake ]; then
