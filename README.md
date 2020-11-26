@@ -27,18 +27,14 @@ Clean the build files with:
 
     cazel clean from_mini_ros
 
-Remove the depends and build files with:
-
-    cazel remove from_mini_ros
-
 Execute the binary file with:
 
     cazel exec from_mini_ros sample
-    
+
 Another sample is as the same:
 
     cazel re-auto for_local_files
-    
+
 
 # To Do
 Supportting for dowloading zip, tar files from ftp.
