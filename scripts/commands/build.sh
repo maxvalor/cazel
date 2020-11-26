@@ -35,9 +35,21 @@ function buildTarget()
   if [ $? -ne 0 ]; then
     return 1
   fi
-  if [ ! -d $target_path/$depends_path ]; then
+  local target_name
+  target_name=`getJsonConfigValue "$json_all" "name"`
+  if [ $? -ne 0 ]; then
     return 1
   fi
+  if [ ! -d $workspace/$const_depends_pathname/$target_name ]; then
+    return 1
+  fi
+
+  # re-link depends
+  if [ -L $target_path/$depends_path ]; then
+    rm -f $target_path/$depends_path
+  fi
+
+  ln -s $workspace/$const_depends_pathname/$target_name $target_path/$depends_path
 
   local include_cmake_str="include($target_path/$depends_path/$const_generated_cmake)"
 
@@ -73,6 +85,8 @@ function buildTarget()
 
   cd $workspace
 
+  # clean temp files
+  rm -f $target_path/$depends_path
   mv $target_path/.$const_cmakelists_filename.cache $target_path/$const_cmakelists_filename
 
   return 0

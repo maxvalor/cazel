@@ -297,6 +297,8 @@ function syncRootRepo()
 
   syncRepo "$target_path" "$json_all"
 
+  rm -f $target_path/$depends_path
+
   return $?
 }
 
