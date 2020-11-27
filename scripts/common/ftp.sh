@@ -22,7 +22,7 @@ function __ftp_getHostnameOrIP()
 function __ftp_getPort()
 {
   local port=`echo "$1" | awk -F'[/:]' '{print $5}'`
-  if [ "$port" =~ ^[0-9]+$ ]; then
+  if [ -n "$(echo $port| sed -n "/^[0-9]\+$/p")" ]; then
     echo $port
     return 0
   else
