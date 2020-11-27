@@ -1,0 +1,21 @@
+{
+  "config":{
+    "name": "ftp_sample",
+    "path": "depends",
+    "cmake": "",
+    "make": "-j8"
+  },
+  "depends": [
+    {
+      "ftp":[
+        {
+          "name": "test",
+          "url": "ftp://speedtest.tele2.net/512KB.zip",
+          "username": "",
+          "password": "",
+          "uncompress": "unzip -o"
+        }
+      ]
+    }
+  ]
+}

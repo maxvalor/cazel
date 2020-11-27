@@ -47,6 +47,7 @@ function _strRightBySlash()
 #   $1 - target file
 # echos:
 #   string - file path
+# returns
 #   0 - success
 #   1 - file not existed
 #   9 - too many or to few parameters
@@ -57,13 +58,11 @@ function getFilePath()
   fi
 
   local target_file=$1
-  if [ -d $target_file ] || [ -f $target_file ]; then
-    local target_path
-    target_path=`_strLeftBySlash $target_file`
-    if [[ $? -eq 0 ]]; then
-      echo $target_path
-      return 0
-    fi
+  local target_path
+  target_path=`_strLeftBySlash $target_file`
+  if [[ $? -eq 0 ]]; then
+    echo $target_path
+    return 0
   fi
 
   return 1
@@ -73,6 +72,7 @@ function getFilePath()
 #   $1 - target file
 # echos:
 #   string - filename
+# returns
 #   0 - success
 #   1 - file not existed
 #   9 - too many or to few parameters
@@ -83,13 +83,11 @@ function getFilename()
   fi
 
   local target_file=$1
-  if [ -d $target_file ] || [ -f $target_file ]; then
-    local target_path
-    target_path=`_strRightBySlash $target_file`
-    if [[ $? -eq 0 ]]; then
-      echo $target_path
-      return 0
-    fi
+  local target_path
+  target_path=`_strRightBySlash $target_file`
+  if [[ $? -eq 0 ]]; then
+    echo $target_path
+    return 0
   fi
   return 1
 }
@@ -99,6 +97,7 @@ function getFilename()
 #   $2 - target filestring to find
 # echos:
 #   string - filename
+# returns
 #   0 - not found
 #   1 - found
 #   9 - too many or to few parameters

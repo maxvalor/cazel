@@ -5,6 +5,7 @@
 source ${CAZEL_LIBS_PATH}/common/project.sh
 source ${CAZEL_LIBS_PATH}/common/util.sh
 source ${CAZEL_LIBS_PATH}/common/logger.sh
+source ${CAZEL_LIBS_PATH}/common/ftp.sh
 
 #-----------------------------------------------------------------------------#
 #                             local varibles                                  #
@@ -184,6 +185,75 @@ function syncGitRepo()
 
 function syncFtpRepo()
 {
+  local json_all_ftp=$1
+
+  local index=0
+  local to_break=0
+  local workspace=`pwd`
+
+  logInfoMsg "syncFtpRepo"
+
+  while [ $to_break -eq 0 ]
+  do
+    local json_ftp
+    json_ftp=`getJsonArrayByIndex "$json_all_ftp" $index`
+    if [ $? -ne 0 ]; then
+      return 0
+    fi
+
+    logInfoMsg "json_ftp:$json_ftp"
+
+    local name
+    local url
+    local uncompress_cmd
+    local username
+    local password
+
+    name=`getJsonValue "$json_ftp" "name"`
+    if [ $? -ne 0 ]; then
+      return 1
+    fi
+    url=`getJsonValue "$json_ftp" "url"`
+    if [ $? -ne 0 ]; then
+      return 1
+    fi
+    uncompress_cmd=`getJsonValue "$json_ftp" "uncompress"`
+    username=`getJsonValue "$json_ftp" "username"`
+    password=`getJsonValue "$json_ftp" "password"`
+    logInfoMsg "ftp download url:$url to $__sync__root_depends_path/$name"
+    if [ ! -d $name ]; then
+      mkdir -p $name
+    fi
+    cd $name
+    ftpDownload $url $username $password
+    if [ "$uncompress_cmd" != "" ]; then
+      logInfoMsg "to uncompress a file."
+      ${uncompress_cmd} `getFilename $url`
+    fi
+    cd -
+
+    isCMakeProject $name
+    logInfoMsg "depend $name is cmake project? => $?"
+    if [ $? -eq 0 ]; then
+      updateGeneratedCMake $name
+    fi
+
+    isCazelProject $name
+    if [ $? -eq 0 ]; then
+      logInfoMsg "a nested cazel workspace"
+      local target_path=`pwd`/$name
+      local json_all
+      logInfoMsg "nested target_path:$target_path"
+      json_all=`loadDependsFile $target_path/$const_config_filename`
+      if [ $? -ne 0 ]; then
+        return 1
+      fi
+      syncRepo $target_path "$json_all"
+    fi
+
+    index=`expr $index + 1`
+  done
+
   return 0
 }
 
