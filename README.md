@@ -30,8 +30,3 @@ Clean the build files with:
 Execute the binary file with:
 
     cazel exec mini_ros_sample sample
-
-
-
-# To Do
-Supportting for dowloading zip, tar files from ftp.
