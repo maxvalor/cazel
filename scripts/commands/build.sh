@@ -79,7 +79,7 @@ function buildTarget()
   cd $workspace
 
   # clean temp files
-  rm -f $target_path/$depends_path
+  #rm -f $target_path/$depends_path
   mv $target_path/.$const_cmakelists_filename.cache $target_path/$const_cmakelists_filename
 
   return 0
