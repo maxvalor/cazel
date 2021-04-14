@@ -20,6 +20,10 @@ function execTarget()
   local binfile=$2
   shift 2
 
+
+  #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$workspace/$const_build_pathname/$target_name/depends/mini_ros
+  #echo $LD_LIBRARY_PATH
+
   if [ -f $target_path/$binfile ]; then
     $target_path/$binfile $@
     return 0
