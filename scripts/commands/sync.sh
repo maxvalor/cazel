@@ -391,28 +391,58 @@ function commandCazelSync()
   logInfoMsg "command: cazel sync."
 
   local target=$1
+  shift
   local ws=`pwd`
-  local target_path
-  target_path=`searchForProject $ws $target`
 
-  case $? in
-    0)
-      syncRootRepo $target_path
-      ;;
-    1)
-      echo "Target:"$target" not found. Please check your projects again."
-      ;;
-    2)
-      echo "More than one target path is found:"
-      for found_target in $target_path
-      do
-        echo " - $found_target"
-      done
-      ;;
-    *)
-      echo "unkown error."
-      ;;
-  esac
+  if [ "$target" == "..." ]; then
+    local projects
+    projects=`searchForAllProjects $ws`
+    echo "Found projects:"$projects
+    echo ""
+    case $? in
+      0)
+        for project in $projects
+        do
+          echo "Synchronizing project: $project"
+          syncRootRepo $project
+          echo ""
+        done
+        ;;
+      1)
+        echo "No projects found. Please check your projects again."
+        ;;
+      2)
+        echo "Same name projects found."
+        ;;
+      *)
+        echo "unkown error."
+        ;;
+    esac
+
+  else
+
+    local target_path
+    target_path=`searchForProject $ws $target`
+
+    case $? in
+      0)
+        syncRootRepo $target_path
+        ;;
+      1)
+        echo "Target:"$target" not found. Please check your projects again."
+        ;;
+      2)
+        echo "More than one target path is found:"
+        for found_target in $target_path
+        do
+          echo " - $found_target"
+        done
+        ;;
+      *)
+        echo "unkown error."
+        ;;
+    esac
+  fi
 
   return 0
 }

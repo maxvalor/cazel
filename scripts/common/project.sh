@@ -110,6 +110,49 @@ function searchForProject()
 }
 
 # params:
+#   $1 - path for search
+# echos:
+#   string: path for projects
+# returns:
+#   0 - projects found
+#   1 - projects not found
+#   2 - same name projects afound
+#   9 - too many parameters
+function searchForAllProjects()
+{
+  if [ $# != 1 ]; then
+    return 9
+  fi
+
+  local search_path=$1
+  local found_paths
+  local files=`ls $search_path`
+
+  local one_file
+  for one_file in $files
+  do
+    if [ "$one_file" != "$const_depends_pathname" ] && [ -d $one_file ]; then
+      local config_files=`find $search_path/$one_file -name $const_config_filename`
+      if [ "$config_files" != "" ]; then
+        local config_file
+        for config_file in $config_files
+        do
+          local found_path=`getFilePath $config_file`
+          if [ "$found_path" != "$const_depends_pathname" ]; then
+            found_paths="$found_paths $found_path"
+          fi
+        done
+      fi
+    fi
+  done
+
+  echo $found_paths
+  logInfoMsg "found_path:$found_path:"$name
+
+  return $rlt
+}
+
+# params:
 #   $1 - target
 # echos:
 #   string: path for target (first found)
