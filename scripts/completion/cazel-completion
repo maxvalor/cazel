@@ -1,17 +1,24 @@
 #!/bin/bash
 
-function _cazel_completion()
+#function _cazel_completion()
+#{
+#    local cur prev opts
+
+#    COMPREPLY=()
+
+#    cur="${COMP_WORDS[COMP_CWORD]}"
+#    prev="${COMP_WORDS[COMP_CWORD-1]}"
+#    opts="sync build make clean remove info"
+
+#    if [[ ${cur} == -* ]] ; then
+#        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+#        return 0
+#    fi
+#}
+
+_cazel_completion()
 {
-    local cur prev opts
-
-    COMPREPLY=()
-
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="sync build make clean remove info"
-
-    if [[ ${cur} == -* ]] ; then
-        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-        return 0
-    fi
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=( $(compgen -W "sync build auto exec clean" -- $cur) )
 }
+complete -F _cazel_completion cazel
