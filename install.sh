@@ -4,6 +4,7 @@ source scripts/common/util.sh
 
 declare g_system_bin="/usr/bin"
 declare g_system_lib="/usr/lib"
+declare g_system_completion="/etc/bash_completion.d"
 declare g_src="./scripts"
 
 function install()
@@ -37,6 +38,12 @@ function install()
   cp -r scripts/commands $g_system_lib/cazel
   echo "done."
 
+  echo -n "Setting completion..."
+  cp scripts/completion/cazel-completion $g_system_completion
+  echo "done."
+
+  source ~/.bashrc
+
   return $?
 }
 
@@ -57,10 +64,14 @@ function uninstall()
     fi
   done
 
-  if [[ -d $g_system_lib/cazel ]]; then
+  if [ -d $g_system_lib/cazel ]; then
     echo -n "Removing $g_system_lib/cazel ..."
     rm -rf $g_system_lib/cazel
     echo "done."
+  fi
+
+  if [ -f $g_system_completion/cazel-completion ]; then
+    rm -f $g_system_completion/cazel-completion
   fi
 
   return $?
